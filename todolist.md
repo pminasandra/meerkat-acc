@@ -1,5 +1,6 @@
 # To do
 
+- [x] preprocessing.py fix inconsistencies in file scheme
 - [ ] auditreading.py read labels
 - [ ] accreading.py read ACC data
     - [ ] accreading.py trim 0s, convert to NaNs
