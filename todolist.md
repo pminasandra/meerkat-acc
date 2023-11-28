@@ -3,7 +3,7 @@
 - [x] preprocessing.py fix inconsistencies in file scheme
 - [x] auditreading.py read labels
 - [ ] accreading.py read ACC data
-    - [ ] accreading.py trim 0s, convert to NaNs
+    - [x] accreading.py trim 0s, convert to NaNs
     - [ ] accreading.py recast to 3D arrays
     - [ ] accreading.py implement generator
 - [ ] extractor.py feature extraction functions
