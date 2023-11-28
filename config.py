@@ -1,4 +1,3 @@
-
 # Pranav Minasandra
 # pminasandra.github.io
 # November 27, 2023
@@ -19,6 +18,12 @@ FIGURES = os.path.join(PROJECTROOT, "Figures")
 
 # Deployments
 DEPLOYMENTS = ["NQ_2021_1", "RW_2021_1", "ZU_2021_1", "ZU_2021_2"]
+
+# Behavior related config
+BEHAVIORS = ["No observation", "Foraging", "Scrabbling", "Standing quadrupedal vigilance", 
+                "Bipedal vigilance", "Sitting vigilance", "Self groom", "Social", 
+                "Haunch quadrupedal vigilance", "Walking", "Running", "Processing", 
+                "Reforage", "Others", "Marking"]
 
 # Other tweaks
 formats=['png', 'pdf', 'svg']
