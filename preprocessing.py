@@ -21,18 +21,19 @@ if not config.SUPPRESS_INFORMATIVE_PRINT:
     old_print = print
     print = utilities.sprint
 
-def alert_and_prompt():
+def _alert_and_prompt():
     print("this code needs to be run only once, to fix potential issues with files.")
-    print("if file issues are already fixed, running this code is unnecessary and may harm your files.")
+    print("if file issues are already fixed, running this code is unnecessary\
+         and may harm your files.")
     input("press enter to continue, or Ctrl+C to exit.")
 
 
 def exterminate_extraneous_column():
     """
     The label files stored by Amlan contain an extra column without a label.
-    This code deletes this extra column
+    This code deletes this extra column.
     """
-    alert_and_prompt()
+    _alert_and_prompt()
 
     for dplment in config.DEPLOYMENTS:
         tgtpath = os.path.join(config.AUDIT_DIR, dplment)
@@ -41,4 +42,5 @@ def exterminate_extraneous_column():
             csvfile.to_csv(csvfilepath, index=False)
 
 if __name__ == "__main__":
+    pass
 #    exterminate_extraneous_column() # already done, don't re-do

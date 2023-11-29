@@ -3,6 +3,10 @@
 # Nov 28, 2023
 # Yay, happy birthday to me!
 
+"""
+Reads and validates behavioral audits.
+"""
+
 import glob
 import os.path
 

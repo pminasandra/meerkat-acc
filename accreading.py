@@ -10,7 +10,6 @@ Reads the HUGE csv files containing acc info.
 import glob
 import os.path
 
-import matplotlib.pyplot as plt
 import pandas as pd
 
 import config
@@ -31,14 +30,14 @@ def drop_leading_zeros(df):
     Drops the leading zeros of the dfs
     """
 
+# This becomes relevant because the Axy-Treks add a bunch of 0.0s in the data
+# before the device turns on
+
     is_not_all_zeros_mask = ~((df['X']==0.0) & (df['Y']==0.0) & (df['Z']==0.0))
     threshold_index = is_not_all_zeros_mask.idxmax() # finds the first 'True'
 
     df.drop(df.index[:threshold_index], inplace=True)
     df.reset_index(drop=True, inplace=True)
-
-# This becomes relevant because the Axy-Treks add a bunch of 0.0s in the data
-# before the device turns on
 
 
 def load_acc_files(list_of_dplments=config.DEPLOYMENTS):
@@ -56,7 +55,8 @@ def load_acc_files(list_of_dplments=config.DEPLOYMENTS):
         tgtpath = os.path.join(config.ACC_GPS_DIR, dplment)
         for csvfilepath in glob.glob(os.path.join(tgtpath, "*.csv")):
             csvfile = pd.read_csv(csvfilepath, usecols=["Timestamp", "X", "Y", "Z"])
-            csvfile['Timestamp'] = pd.to_datetime(csvfile['Timestamp'], format='%d/%m/%Y %H:%M:%S.%f', dayfirst=True)
+            csvfile['Timestamp'] = pd.to_datetime(csvfile['Timestamp'], format='%d/%m/%Y %H:%M:%S.%f', 
+                                        dayfirst=True)
             validate_acc_file(csvfile)
             drop_leading_zeros(csvfile)
 
