@@ -83,7 +83,9 @@ def load_all_training_data():
             cols_needed.remove('index')
 # so much fighting pandas happening at this stage
 # just wanna switch to c++ or something lmao
-            training_data = ft_data.join(audit_data.set_index('Timestamp'), on='Timestamp', how='inner', lsuffix="_l", rsuffix="_r")
+            training_data = ft_data.join(audit_data.set_index('Timestamp'),
+                                    on='Timestamp', how='inner', lsuffix="_l", 
+                                    rsuffix="_r")
 
             del ft_data
             del audit_data
