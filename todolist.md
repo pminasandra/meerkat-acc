@@ -8,5 +8,7 @@
     - [x] accreading.py implement generator
 - [x] extractor.py feature extraction functions
 - [ ] gps_speeds.py extract GPS running states
+- [x] classifier.py file naming bug resolution
+- [x] classifier.py put all the data together
 - [ ] classifier.py full classification using RF
 - [ ] analyses.py generate confusion matrices, precision-recall tables

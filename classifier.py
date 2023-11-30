@@ -68,14 +68,10 @@ def load_feature_data_for(dplment, individual):
 def load_all_training_data():
     """
     Loads all available feature and audit data to RAM.
-    Returns: all_data (dict)
-        such that: all_data[<dplment>] is a dict
-            such that: all_data[<dplment>][<individual>} is a pd.DataFrame.
+    Returns: pd.DataFrame
     """
 
-    ALL_TRAINING_DATA = {}
-    for dplment in config.DEPLOYMENTS:
-        ALL_TRAINING_DATA[dplment] = {}
+    ALL_TRAINING_DATA = []
 
     for dplment in config.DEPLOYMENTS:
         for individual in config.INDIVIDUALS[dplment]:
@@ -96,10 +92,15 @@ def load_all_training_data():
             training_data.sort_values(by='Timestamp')
             training_data.reset_index(inplace=True)
 
-            ALL_TRAINING_DATA[dplment][individual] = training_data
+            training_data['Deployment'] = dplment
+            training_data['Individual'] = individual
 
+            ALL_TRAINING_DATA.append(training_data)
+
+    ALL_TRAINING_DATA = pd.concat(ALL_TRAINING_DATA)
+    ALL_TRAINING_DATA.reset_index(inplace=True)
     return ALL_TRAINING_DATA
 
 if __name__=="__main__":
     data = load_all_training_data()
-    print(data)
+    data.to_csv(os.path.join(config.DATA, "all_trainable_data_for_classifier.csv"))

@@ -46,12 +46,16 @@ DROP_MISSING = True
 COMBINE_BEHAVIORS = True
 
 BEHAVIOR_SIMPLIFIER = {
+    'Vigilance': 'Vigilance',
     'Sitting vigilance': 'Vigilance',
     'Bipedal vigilance': 'Vigilance',
     'Haunch quadrupedal vigilance': 'Vigilance',
+    'Standing quadrupedal vigilance': 'Vigilance',
+    'Foraging': 'Foraging',
     'Scrabbling': 'Foraging',
     'Walking': 'Foraging',
     'Reforage': 'Foraging',
+    'Others': 'Others',
     'Social': 'Others',
     'Processing': 'Others',
     'Self groom': 'Others',

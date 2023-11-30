@@ -47,6 +47,8 @@ def load_audits(list_of_dplments=config.DEPLOYMENTS):
             csvfile['Timestamp'] = pd.to_datetime(csvfile['Timestamp'])
             if config.DROP_MISSING:
                 csvfile = csvfile[csvfile['Behavior'] != "No observation"]
+            if config.COMBINE_BEHAVIORS:
+                csvfile['Behavior'] = csvfile['Behavior'].map(config.BEHAVIOR_SIMPLIFIER)
 
             yield dplment, os.path.basename(csvfilepath)[:-len(".csv")], csvfile
 
@@ -83,6 +85,8 @@ def load_audit_data_for(dplment, individual):
 
     if config.DROP_MISSING:
         all_data = all_data[all_data['Behavior'] != "No observation"]
+    if config.COMBINE_BEHAVIORS:
+        all_data['Behavior'] = all_data['Behavior'].map(config.BEHAVIOR_SIMPLIFIER)
 
     return all_data
 
