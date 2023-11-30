@@ -27,6 +27,7 @@ def validate_audit(df):
     for state in df['Behavior'].unique():
         assert state in config.BEHAVIORS
 
+
 def load_audits(list_of_dplments=config.DEPLOYMENTS):
     """
     GENERATOR!!
@@ -44,8 +45,46 @@ def load_audits(list_of_dplments=config.DEPLOYMENTS):
             csvfile = pd.read_csv(csvfilepath)
             validate_audit(csvfile)
             csvfile['Timestamp'] = pd.to_datetime(csvfile['Timestamp'])
+            if config.DROP_MISSING:
+                csvfile = csvfile[csvfile['Behavior'] != "No observation"]
 
             yield dplment, os.path.basename(csvfilepath)[:-len(".csv")], csvfile
+
+
+def load_audit_data_for(dplment, individual):
+    """
+    Loads all available audit data for specified individual from specified 
+    deployment.
+    Args:
+        dplment (str)
+        individual (str)
+    Returns:
+        pd.DataFrame
+    Raises:
+        AssertionError: when looking for incorrect deployments or individuals.
+    """
+
+    assert dplment in config.DEPLOYMENTS
+    assert individual in config.INDIVIDUALS[dplment]
+
+    tgtdirpath = os.path.join(config.AUDIT_DIR, dplment)
+    tgtfiles = glob.glob(os.path.join(tgtdirpath, f"*{individual}*.csv"))
+
+    if len(tgtfiles) == 0:
+        return pd.DataFrame({"Timestamp": [], "Behavior": []})
+
+    all_data = [pd.read_csv(file_) for file_ in tgtfiles]
+    all_data = pd.concat(all_data)
+    validate_audit(all_data)
+    all_data['Timestamp'] = pd.to_datetime(all_data['Timestamp'])
+
+    all_data.sort_values(by='Timestamp', inplace=True)
+    all_data.reset_index(inplace=True)
+
+    if config.DROP_MISSING:
+        all_data = all_data[all_data['Behavior'] != "No observation"]
+
+    return all_data
 
 
 if __name__ == "__main__":

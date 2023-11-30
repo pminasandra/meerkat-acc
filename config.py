@@ -23,11 +23,41 @@ FIGURES = os.path.join(PROJECTROOT, "Figures")
 # Deployments
 DEPLOYMENTS = ["NQ_2021_1", "RW_2021_1", "ZU_2021_1", "ZU_2021_2"]
 
+# Loading names of all individuals
+INDIVIDUALS = {}
+for dplment in DEPLOYMENTS:
+    dirname = os.path.join(ACC_GPS_DIR, dplment)
+    if dplment not in INDIVIDUALS:
+        INDIVIDUALS[dplment] = []
+
+    for filename in os.listdir(dirname):
+        INDIVIDUALS[dplment].append(filename.split('_')[1])
+
+for dplment in INDIVIDUALS:
+    INDIVIDUALS[dplment] = list(set(INDIVIDUALS[dplment]))
+
 # Behavior related config
 BEHAVIORS = ["No observation", "Foraging", "Scrabbling", "Standing quadrupedal vigilance",
             "Bipedal vigilance", "Sitting vigilance", "Self groom", "Social",
             "Haunch quadrupedal vigilance", "Walking", "Running", "Processing",
             "Reforage", "Others", "Marking"]
+
+DROP_MISSING = True
+COMBINE_BEHAVIORS = True
+
+BEHAVIOR_SIMPLIFIER = {
+    'Sitting vigilance': 'Vigilance',
+    'Bipedal vigilance': 'Vigilance',
+    'Haunch quadrupedal vigilance': 'Vigilance',
+    'Scrabbling': 'Foraging',
+    'Walking': 'Foraging',
+    'Reforage': 'Foraging',
+    'Social': 'Others',
+    'Processing': 'Others',
+    'Self groom': 'Others',
+    'Marking': 'Others',
+    'Running': 'Running'
+} # comes from repeated tweaking during Amlan's project
 
 # Other tweaks
 formats=['png', 'pdf', 'svg']
