@@ -44,6 +44,7 @@ BEHAVIORS = ["No observation", "Foraging", "Scrabbling", "Standing quadrupedal v
 
 DROP_MISSING = True
 COMBINE_BEHAVIORS = True
+DROP_OTHERS = True
 
 BEHAVIOR_SIMPLIFIER = {
     'Vigilance': 'Vigilance',
@@ -69,3 +70,7 @@ formats=['png', 'pdf', 'svg']
 
 # Miscellaneous
 SUPPRESS_INFORMATIVE_PRINT = False
+AMLAN_OFFSET = -4 # There is a strange inexplicable offset between the ACC and
+                  # the official labels
+LOG_TRANSFORM_VEDBA = True
+SCALE_DATA = False # turned out to be a bad idea

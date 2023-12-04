@@ -16,3 +16,9 @@ retained the remaining data.
 
 These tags recorded sensor readings of '0' for all time.
 Eliminated these files from analyses.
+
+# VeDBAs are sometimes zero
+
+Some isolated seconds show a VeDBA value of 0. The tag actually doesn't move
+around at this time it seems. I am assuming this is a true biological state
+where the animal is super-still, because nothing else makes sense to me here.

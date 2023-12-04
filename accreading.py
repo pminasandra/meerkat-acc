@@ -55,7 +55,8 @@ def load_acc_files(list_of_dplments=config.DEPLOYMENTS):
         tgtpath = os.path.join(config.ACC_GPS_DIR, dplment)
         for csvfilepath in glob.glob(os.path.join(tgtpath, "*.csv")):
             csvfile = pd.read_csv(csvfilepath, usecols=["Timestamp", "X", "Y", "Z"])
-            csvfile['Timestamp'] = pd.to_datetime(csvfile['Timestamp'], format='%d/%m/%Y %H:%M:%S.%f', 
+            csvfile['Timestamp'] = pd.to_datetime(csvfile['Timestamp'],
+                                        format='%d/%m/%Y %H:%M:%S.%f',
                                         dayfirst=True)
             validate_acc_file(csvfile)
             drop_leading_zeros(csvfile)

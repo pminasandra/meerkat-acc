@@ -7,6 +7,7 @@
 Reads and validates behavioral audits.
 """
 
+import datetime as dt
 import glob
 import os.path
 
@@ -21,11 +22,16 @@ if not config.SUPPRESS_INFORMATIVE_PRINT:
 
 def validate_audit(df):
     """
-    Checks column labels and behavioral states in a given dataframe
+    Checks column labels and behavioral states in a given dataframe,
+    and performs other fixes.
     """
     assert list(df.columns) == ['Timestamp', 'Behavior'] #labels as chosen by Amlan
     for state in df['Behavior'].unique():
         assert state in config.BEHAVIORS
+
+    # there seems to be a weird
+    # offset in Amlan's labelling.
+    df["Timestamp"] += dt.timedelta(seconds=config.AMLAN_OFFSET)
 
 
 def load_audits(list_of_dplments=config.DEPLOYMENTS):
@@ -43,12 +49,16 @@ def load_audits(list_of_dplments=config.DEPLOYMENTS):
         tgtpath = os.path.join(config.AUDIT_DIR, dplment)
         for csvfilepath in glob.glob(os.path.join(tgtpath, "*.csv")):
             csvfile = pd.read_csv(csvfilepath)
-            validate_audit(csvfile)
             csvfile['Timestamp'] = pd.to_datetime(csvfile['Timestamp'])
+            validate_audit(csvfile)
             if config.DROP_MISSING:
                 csvfile = csvfile[csvfile['Behavior'] != "No observation"]
             if config.COMBINE_BEHAVIORS:
-                csvfile['Behavior'] = csvfile['Behavior'].map(config.BEHAVIOR_SIMPLIFIER)
+                csvfile['Behavior'] = csvfile['Behavior'].map(
+                        config.BEHAVIOR_SIMPLIFIER
+                        )
+            if config.DROP_OTHERS:
+                csvfile = csvfile[csvfile["Behavior"] != "Others"]
 
             yield dplment, os.path.basename(csvfilepath)[:-len(".csv")], csvfile
 
@@ -77,8 +87,8 @@ def load_audit_data_for(dplment, individual):
 
     all_data = [pd.read_csv(file_) for file_ in tgtfiles]
     all_data = pd.concat(all_data)
-    validate_audit(all_data)
     all_data['Timestamp'] = pd.to_datetime(all_data['Timestamp'])
+    validate_audit(all_data)
 
     all_data.sort_values(by='Timestamp', inplace=True)
     all_data.reset_index(inplace=True)
@@ -87,6 +97,8 @@ def load_audit_data_for(dplment, individual):
         all_data = all_data[all_data['Behavior'] != "No observation"]
     if config.COMBINE_BEHAVIORS:
         all_data['Behavior'] = all_data['Behavior'].map(config.BEHAVIOR_SIMPLIFIER)
+    if config.DROP_OTHERS:
+        all_data = all_data[all_data["Behavior"] != "Others"]
 
     return all_data
 
