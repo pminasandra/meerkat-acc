@@ -24,6 +24,7 @@ import extractor
 import utilities
 
 ALL_FEATURES = list(extractor.ALL_FEATURES.keys())
+ALL_FEATURES.append('perc_vedba')
 
 if not config.SUPPRESS_INFORMATIVE_PRINT:
     old_print = print
