@@ -99,7 +99,8 @@ def delete_useless_data():
             df = df[df['Timestamp'].dt.date != dt.date(2021, 7, 19)]
 
         tgtfilename = os.path.join(config.ACC_GPS_DIR, dplment, filename)
-        df.to_csv(filename + ".csv", index=False)
+        df.to_csv(tgtfilename + ".csv", index=False)
+
 if __name__ == "__main__":
     delete_useless_data()
     pass
