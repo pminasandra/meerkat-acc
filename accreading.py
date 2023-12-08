@@ -10,10 +10,30 @@ Reads the HUGE csv files containing acc info.
 import glob
 import os.path
 
+import numpy as np
 import pandas as pd
 
 import config
 import utilities
+
+dtypes_dict_raw = {
+    'TagID': str,
+    'Timestamp': str,
+    'X': np.float64,
+    'Y': np.float64,
+    'Z': np.float64,
+    'Activity': str,
+    'location-lat': np.float64,
+    'location-lon': np.float64,
+    'height-msl': str,
+    'ground-speed': np.float64,
+    'satellites': str,
+    'hdop': str,
+    'signal-strength': str,
+    'Sensor Raw': str,
+    'Battery (V)': str,
+    'Metadata': str
+}
 
 if not config.SUPPRESS_INFORMATIVE_PRINT:
     old_print = print
@@ -59,7 +79,11 @@ def load_acc_files(list_of_dplments=config.DEPLOYMENTS, subset_cols=True):
             if subset_cols:
                 csvfile = pd.read_csv(csvfilepath, usecols=["Timestamp", "X", "Y", "Z"])
             else:
-                csvfile = pd.read_csv(csvfilepath)
+                try:
+                    csvfile = pd.read_csv(csvfilepath, dtype=dtypes_dict_raw)
+                except Exception as e:
+                    print("dtype didn't work, trying again:", e)
+                    csvfile = pd.read_csv(csvfilepath)
             csvfile['Timestamp'] = pd.to_datetime(csvfile['Timestamp'],
                                         format='%d/%m/%Y %H:%M:%S.%f',
                                         dayfirst=True)

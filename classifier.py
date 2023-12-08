@@ -107,7 +107,7 @@ def train_random_forest(train_features, train_classes):
         sklearn.ensemble.RandomForestClassifier
     """
     rfc = sklearn.ensemble.RandomForestClassifier(
-            #class_weight="balanced"
+            class_weight="balanced"
             )
     rfc.fit(train_features, train_classes)
     return rfc

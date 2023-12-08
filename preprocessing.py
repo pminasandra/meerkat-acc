@@ -58,35 +58,51 @@ def delete_useless_data():
         print(f"processing {filename}")
         if dplment == 'NQ_2021_1':
             df = df[df['Timestamp'] < dt.datetime(2021, 8, 17, 20, 0, 0)]
+            df = df[df['Timestamp'] > dt.datetime(2021, 8, 11, 7, 0, 0)]
             print("general data trimming")
 
             if 'M019' in filename:
                 print("ind-specific data dropping")
                 df = df[df['Timestamp'] < dt.datetime(2021, 8, 13,
                                                         0, 0, 0)]
-            if 'NQ_VNQM012_SHTB_Axy_009_20210814-20210817' in filename:
+            if 'VNQM012_SHTB_Axy_009' in filename:
                 print("ind-specific data dropping")
                 df = df[df['Timestamp'] > dt.datetime(2021, 8, 13,
+                                                        7, 0, 0)]
+            if 'VNQM012_SHTB_Axy_013' in filename:
+                print("ind-specific data dropping")
+                df = df[df['Timestamp'] < dt.datetime(2021, 8, 13,
                                                         7, 0, 0)]
 
         elif dplment == "RW_2021_1":
             print("general data trimming")
             df = df[df['Timestamp'] > dt.datetime(2021, 6, 4, 7, 0, 0)]
+            df = df[df['Timestamp'] < dt.datetime(2021, 6, 11, 7, 0, 0)]
 
             if 'VJXM126_SHMB_Axy013' in filename:
                 print("ind-specific data dropping")
                 df = df[df['Timestamp'] > dt.datetime(2021, 6, 5,
                                                         7, 0, 0)]
+            if 'VJXM126_SHMB_Axy010' in filename:
+                print("ind-specific data dropping")
+                df = df[df['Timestamp'] < dt.datetime(2021, 6, 5,
+                                                        6, 50, 0)]
             if 'VMPF026_RST_Axy019' in filename:
                 print("ind-specific data dropping")
                 df = df[df['Timestamp'] > dt.datetime(2021, 6, 9,
                                                         7, 0, 0)]
+            if 'VMPF026_RST_Axy003' in filename:
+                print("ind-specific data dropping")
+                df = df[df['Timestamp'] < dt.datetime(2021, 6, 9,
+                                                        7, 0, 0)]
 
         elif dplment == "ZU_2021_1":
+            df = df[df['Timestamp'] > dt.datetime(2021, 5, 16, 7, 0, 0)]
+            df = df[df['Timestamp'] < dt.datetime(2021, 5, 24, 7, 0, 0)]
             print("general data trimming")
-            if 'VZUF054_RRRS_Axy003' in filename:
+            if 'VZUF054_RRRS_Axy019' in filename:
                 print("ind-specific data dropping")
-                df = df[df['Timestamp'] > dt.datetime(2021, 5, 7,
+                df = df[df['Timestamp'] > dt.datetime(2021, 5, 17,
                                                         7, 0, 0)]
             if 'VZUM056_LTRT_Axy004' in filename:
                 print("ind-specific data dropping")
@@ -94,10 +110,13 @@ def delete_useless_data():
                                                         7, 0, 0)]
 
         elif dplment == "ZU_2021_2":
+            df = df[df['Timestamp'] > dt.datetime(2021, 7, 18, 7, 0, 0)]
+            df = df[df['Timestamp'] < dt.datetime(2021, 7, 25, 7, 0, 0)]
             print("general data trimming")
             df = df[df['Timestamp'] < dt.datetime(2021, 7, 25, 10, 0, 0)]
             df = df[df['Timestamp'].dt.date != dt.date(2021, 7, 19)]
 
+        df['Timestamp'] = df['Timestamp'].dt.strftime('%d/%m/%Y %H:%M:%S.%f')
         tgtfilename = os.path.join(config.ACC_GPS_DIR, dplment, filename)
         df.to_csv(tgtfilename + ".csv", index=False)
 

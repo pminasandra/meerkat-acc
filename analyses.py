@@ -57,6 +57,22 @@ def _split_features_and_classes(data):
     return d_features, d_classes
 
 
+def duplicate_running(data, times):
+    """
+    Adds several duplicates of the running behaviors so that the priors
+    are not extremely unbalanced.
+    Args:
+        data (pd.DataFrame): all available training data
+        times (int): how many times the data must be increased
+    """
+
+    data_r = data[data['Behavior'] == 'Running']
+    data_c = data.copy()
+    data_c = pd.concat([data_c] + [data_r]*(times-1), ignore_index=True)
+
+    return data_c
+
+
 def trad_analyze_random_forest(classifier, t_features, t_classes,
                                 fig=None, ax=None
                               ):
@@ -187,9 +203,6 @@ def classify_all_available_data(rfc):
             ind_preds.to_csv(tgtfile, index=False)
 
 
-
-
-
 if __name__ == "__main__":
 
     datasource = os.path.join(config.DATA, "ClassifierRelated",
@@ -199,11 +212,12 @@ if __name__ == "__main__":
         data['mean_vedba'] += 1e-10
         data['mean_vedba'] = np.log(data['mean_vedba'])
 
+    data = duplicate_running(data, 2)
     data_features, data_classes = _split_features_and_classes(data)
 
     train_features, test_features, train_classes, test_classes =\
         sklearn.model_selection.train_test_split(data_features, data_classes,
-        test_size=0.25)
+        test_size=0.25, stratify=data_classes)
 
     if config.SCALE_DATA:
         scaler = StandardScaler()
