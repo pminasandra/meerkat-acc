@@ -10,6 +10,10 @@ retained the remaining data.
 
 (2023-12-07) Vlad regenerated this file, so this individual is now included
 
+(2023-12-08) This file isn't in the correct format either, and I will have to
+redo the code a lot to accomodate different file structures. I am just skipping
+this individual in the interest of time.
+
 # Tags that haven't recorded anything
 
 - ZU_2021_2/ZU_VZUM059_LTLS_Axy009_20210718-20210718.csv
@@ -50,5 +54,7 @@ RW_2021_1
 NQ_2021_1
 - M019 lost on 13.08
 - NQ_VNQM012_SHTB_Axy_009_20210814-20210817.csv should start on 13.08
+    BUT (2023-12-08) this file fails totally on the 13th. Is there some
+    mislabelling here?
 - everything stops after 17.08.2021 stop at 20:00
 
