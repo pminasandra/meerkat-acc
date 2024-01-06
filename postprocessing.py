@@ -22,6 +22,8 @@ if not config.SUPPRESS_INFORMATIVE_PRINT:
 
 FINAL_PREDICTIONS_DESTINATION = os.path.join(config.DATA,
                                     "PredictionsByIndividual")
+DEPLOYMENTWISE_INDIVIDUAL_FILES_DEST = os.path.join(config.DATA,
+                                    "PredictionsByIndividualDeploymentwise")
 
 def pool_individualwise_predictions():
     """
@@ -56,5 +58,33 @@ def pool_individualwise_predictions():
                                         ind + ".csv"),
                         index=False)
 
+def pool_deploymentwise_predictions():
+    """
+    Pools predictions by individuals together, but preserves deployments
+    """
+    os.makedirs(DEPLOYMENTWISE_INDIVIDUAL_FILES_DEST, exist_ok=True)
+
+    for dplment in config.DEPLOYMENTS:
+        all_files = glob.glob(os.path.join(
+                                    config.DATA,
+                                    "Predictions",#where file-wise predictions are.
+                                    dplment,
+                                    "*_predictions.csv"
+                                )
+                            )
+        os.makedirs(os.path.join(DEPLOYMENTWISE_INDIVIDUAL_FILES_DEST,
+                        dplment), exist_ok=True)
+
+        list_of_inds = list(set(
+                        [os.path.basename(x).split("_")[2] for x in all_files]
+                        ))
+        for ind in list_of_inds:
+            list_of_files = [x for x in all_files\
+                                if os.path.basename(x).split("_")[2] == ind]
+            df_ind = pd.concat((pd.read_csv(x) for x in list_of_files))
+            df_ind.to_csv(os.path.join(DEPLOYMENTWISE_INDIVIDUAL_FILES_DEST,
+                        dplment, ind + ".csv"), index=False)
+
 if __name__ == "__main__":
     pool_individualwise_predictions()
+    pool_deploymentwise_predictions()
