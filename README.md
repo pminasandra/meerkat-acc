@@ -17,34 +17,42 @@ to fieldwork, data preprocessing, etc. include:
 - Marta Manser
 
 
-# Usage
+# Installation and setup
+
+On Linux and mac, the following command will setup the folder structure
+and download and setup code.
+
+```
+curl -sSf https://raw.githubusercontent.com/pminasandra/meerkat-acc/master/setup.sh | bash
+```
+
 This software was written to analyse meerkat accelerometry data from
-collarred hyenas. It constructs an elegant machine learning system using
+collared meerkats. It constructs an elegant machine learning system using
 pre-recorded ground truth data, and provides a second-by-second report of 
 the behavioural states of the
 hyenas. This software, and all libraries used by it, are open source. 
 
-The file [DOCS.md (upcoming)](./DOCS.md) provides details about how to set up and run this software
-effectively and how to interpret the results. 
+# Details on folder structure
 
-# Folder structure
-
-The following folder structure is recommended.
+The following folder structure is recommended (and will be setup by the command
+above).
 
 ```
-<PROJECTROOT>/
+<PROJECTROOT>/ (usually autonamed meerkat-acc by the command above)
 |
-|-- code/
+|-- classifier/
 |-- Data/
 |-- Figures/
 ```
 
-`PROJECTROOT` can be any folder of your choosing.
-In the `code` subfolder, create a file named `.cw` that contains _only_ the
-filepath for `PROJECTROOT`.
+Generally, `PROJECTROOT` can be any folder of your choosing.
+In the `classifier` subfolder, you a file named `.cw` that contains _only_ the
+filepath for `PROJECTROOT` (also done by the command above).
 
 # Dependencies
 The following software components need to be installed.
+These will _not_ be installed by the command above, please use the below
+instructions.
 Commands mentioned work in typical Linux systems running the bash shell (e.g.,
 Ubuntu or Pop!\_OS). If you are using Windows or Mac, please install things
 using the appropriate way for your system.
@@ -54,7 +62,7 @@ Python 3.8+. We have tested on Python 3.10.
 To install, use
 
 ```
-sudo apt install python
+sudo apt install python3
 ```
 
 ## Python libraries
@@ -73,6 +81,10 @@ python3 -m pip install --user numpy scipy matplotlib pandas scikit-learn
 ```
 
 
+# Usage
+- Copy the folders `ACC_GPS` and `Audits` (made available [here soon]()) into the
+`Data` folder in your `PROJECTROOT`. 
+- Run `python3 main.py` to run all analyses in order.
 
 # Contact
 If you have any questions or problems with the code, please feel free to contact
