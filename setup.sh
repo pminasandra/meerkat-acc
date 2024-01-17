@@ -17,7 +17,7 @@ mkdir Data/ClassifierRelated
 mkdir Data/Features
 mkdir Data/Predictions
 mkdir Data/PredictionsByIndividual
-mkdir PredictionsByIndividualDeploymentwise
+mkdir Data/PredictionsByIndividualDeploymentwise
 
 mkdir Figures
 
