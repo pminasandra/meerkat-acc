@@ -69,11 +69,21 @@ if __name__ == "__main__":
         data['mean_vedba'] += 1e-10
         data['mean_vedba'] = np.log(data['mean_vedba'])
 
-    data_features, data_classes = analyses._split_features_and_classes(data)
+    train_data, test_data = sklearn.model_selection.train_test_split(
+        data,
+        test_size=0.25
+    )
 
-    train_features, test_features, train_classes, test_classes =\
-        sklearn.model_selection.train_test_split(data_features, data_classes,
-        test_size=0.25)
+    train_data = analyses.duplicate_running(train_data, 2)
+    test_data = analyses.duplicate_running(test_data, 2)
+
+    train_features, train_classes = analyses._split_features_and_classes(
+        train_data
+    )
+
+    test_features, test_classes = analyses._split_features_and_classes(
+        test_data
+    )
 
     if config.SCALE_DATA:
         scaler = StandardScaler()
@@ -94,12 +104,16 @@ if __name__ == "__main__":
 
 
 # 5. CLASSIFY ALL AVAILABLE TOTAL 
+    data = analyses.duplicate_running(data, 2)
+    data_features, data_classes = analyses._split_features_and_classes(data)
+
     rfc_total = classifier.train_random_forest(data_features, data_classes)
-    classify_all_available_data(rfc_total)
+    analyses.classify_all_available_data(rfc_total)
 
 
 # 6. POST PROCESSING
     postprocessing.pool_individualwise_predictions()
+    postprocessing.pool_deploymentwise_predictions()
 
 else:
     raise ImportError("the module main.py is not meant for imports")

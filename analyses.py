@@ -90,7 +90,7 @@ def trad_analyze_random_forest(classifier, t_features, t_classes,
         ax
     """
 
-    pred_classes = rfc.predict(t_features)
+    pred_classes = classifier.predict(t_features)
     clfreport = sklearn.metrics.classification_report(t_classes,
                             pred_classes, output_dict=True)
 
@@ -104,12 +104,13 @@ def trad_analyze_random_forest(classifier, t_features, t_classes,
 # be code that is completely idiotproof. Be careful in using this.
 # Don't create a situation where you have just a fig or just an ax.
     sklearn.metrics.ConfusionMatrixDisplay.from_estimator(
-                rfc,
+                classifier,
                 t_features,
                 t_classes,
                 normalize='true',
                 ax=ax,
-                cmap='Reds'
+                cmap='Reds',
+                labels=['Foraging', 'Vigilance', 'Running']
             )
 
     utilities.saveimg(fig, "confusionmatrix_randomized_test")
@@ -161,7 +162,8 @@ def indwise_analyze_random_forest(data, fig=None, ax=None):
             pred_classes,
             normalize='true',
             ax=ax,
-            cmap='Reds'
+            cmap='Reds',
+            labels=['Foraging', 'Vigilance', 'Running']
         )
 
     utilities.saveimg(fig, "confusionmatrix_indwise_test")
@@ -191,7 +193,7 @@ def classify_all_available_data(rfc):
             timestamps = ind_data['Timestamp']
             ind_data = ind_data[ALL_FEATURES]
 
-            ind_preds = rfc_total.predict(ind_data)
+            ind_preds = rfc.predict(ind_data)
             ind_preds = pd.DataFrame({'datetime': timestamps,
                                       'state': ind_preds})
             tgtfilename = filename[:-len("_extracted_features.csv")]\
