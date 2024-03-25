@@ -80,7 +80,7 @@ def pool_deploymentwise_predictions():
                         ))
         for ind in list_of_inds:
             list_of_files = [x for x in all_files\
-                                if os.path.basename(x).split("_")[2] == ind]
+                                if os.path.basename(x).split("_")[1] == ind]
             df_ind = pd.concat((pd.read_csv(x) for x in list_of_files))
             df_ind.to_csv(os.path.join(DEPLOYMENTWISE_INDIVIDUAL_FILES_DEST,
                         dplment, ind + ".csv"), index=False)
