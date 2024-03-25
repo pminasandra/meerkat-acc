@@ -76,7 +76,7 @@ def pool_deploymentwise_predictions():
                         dplment), exist_ok=True)
 
         list_of_inds = list(set(
-                        [os.path.basename(x).split("_")[2] for x in all_files]
+                        [os.path.basename(x).split("_")[1] for x in all_files]
                         ))
         for ind in list_of_inds:
             list_of_files = [x for x in all_files\
