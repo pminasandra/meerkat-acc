@@ -43,7 +43,7 @@ def each_second_of_data(acc_df):
 
     accreading.validate_acc_file(acc_df)
 
-    acc_df['TimestampRounded'] = acc_df['Timestamp'].dt.round('1s')
+    acc_df['TimestampRounded'] = acc_df['Timestamp'].dt.round('2s')
     for time, frame in acc_df.groupby("TimestampRounded"):
         yield time, frame
 
@@ -51,54 +51,54 @@ def each_second_of_data(acc_df):
 ##### FEATURES TO BE USED START HERE
 # NOTE: Start all these functions with '_'
 
-@feature
+##@feature
 def _xmean(frame):
     return frame.X.mean()
 
-@feature
+##@feature
 def _ymean(frame):
     return frame.Y.mean()
 
-@feature
+##@feature
 def _zmean(frame):
     return frame.Z.mean()
 
 
-@feature
+##@feature
 def _xvar(frame):
     return frame.X.var()
 
-@feature
+##@feature
 def _yvar(frame):
     return frame.Y.var()
 
-@feature
+#@feature
 def _zvar(frame):
     return frame.Z.var()
 
 
-@feature
+#@feature
 def _xmin(frame):
     return frame.X.min()
 
-@feature
+#@feature
 def _ymin(frame):
     return frame.Y.min()
 
-@feature
+#@feature
 def _zmin(frame):
     return frame.Z.min()
 
 
-@feature
+#@feature
 def _xmax(frame):
     return frame.X.max()
 
-@feature
+#@feature
 def _ymax(frame):
     return frame.Y.max()
 
-@feature
+#@feature
 def _zmax(frame):
     return frame.Z.max()
 
@@ -118,9 +118,9 @@ def make_features_dir():
     Ensures that there exists a features dir
     """
 
-    os.makedirs(os.path.join(config.DATA, "Features"), exist_ok=True)
+    os.makedirs(os.path.join(config.DATA, "Features_VeDBA_2s"), exist_ok=True)
     for dplment in config.DEPLOYMENTS:
-        os.makedirs(os.path.join(config.DATA, "Features", dplment), exist_ok=True)
+        os.makedirs(os.path.join(config.DATA, "Features_VeDBA_2s", dplment), exist_ok=True)
 
 
 def extract_all_features(accfile_generator):
@@ -148,7 +148,7 @@ def extract_all_features(accfile_generator):
                 feature_df[fname].append(fval)
 
         tgtfilename = filename + "_extracted_features.csv"
-        tgtfilepath = os.path.join(config.DATA, "Features", dplment, tgtfilename)
+        tgtfilepath = os.path.join(config.DATA, "Features_VeDBA_2s", dplment, tgtfilename)
 
         feature_df = pd.DataFrame(feature_df)
         feature_df.to_csv(tgtfilepath, index=False)
