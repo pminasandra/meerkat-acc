@@ -21,9 +21,9 @@ if not config.SUPPRESS_INFORMATIVE_PRINT:
     print = utilities.sprint
 
 FINAL_PREDICTIONS_DESTINATION = os.path.join(config.DATA,
-                                    "PredictionsByIndividual")
+                                    "PredictionsByIndividual_VeDBA")
 DEPLOYMENTWISE_INDIVIDUAL_FILES_DEST = os.path.join(config.DATA,
-                                    "PredictionsByIndividualDeploymentwise")
+                                    "PredictionsByIndividualDeploymentwise_VeDBA")
 
 def pool_individualwise_predictions():
     """
@@ -34,7 +34,7 @@ def pool_individualwise_predictions():
 
     all_files = glob.glob(os.path.join(
                                 config.DATA,
-                                "Predictions",#where file-wise predictions are.
+                                "Predictions_VeDBA",#where file-wise predictions are.
                                 "*",
                                 "*_predictions.csv"
                             )
@@ -67,7 +67,7 @@ def pool_deploymentwise_predictions():
     for dplment in config.DEPLOYMENTS:
         all_files = glob.glob(os.path.join(
                                     config.DATA,
-                                    "Predictions",#where file-wise predictions are.
+                                    "Predictions_VeDBA",#where file-wise predictions are.
                                     dplment,
                                     "*_predictions.csv"
                                 )
