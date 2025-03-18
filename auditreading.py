@@ -34,6 +34,23 @@ def validate_audit(df):
     df["Timestamp"] += dt.timedelta(seconds=config.AMLAN_OFFSET)
 
 
+def load_auditfile(filepath):
+    csvfilepath = filepath
+    csvfile = pd.read_csv(csvfilepath)
+    csvfile['Timestamp'] = pd.to_datetime(csvfile['Timestamp'])
+    validate_audit(csvfile)
+    if config.DROP_MISSING:
+        csvfile = csvfile[csvfile['Behavior'] != "No observation"]
+    if config.COMBINE_BEHAVIORS:
+        csvfile['Behavior'] = csvfile['Behavior'].map(
+                config.BEHAVIOR_SIMPLIFIER
+                )
+    if config.DROP_OTHERS:
+        csvfile = csvfile[csvfile["Behavior"] != "Others"]
+
+    return csvfile
+
+
 def load_audits(list_of_dplments=config.DEPLOYMENTS):
     """
     GENERATOR!!
@@ -48,18 +65,7 @@ def load_audits(list_of_dplments=config.DEPLOYMENTS):
     for dplment in list_of_dplments:
         tgtpath = os.path.join(config.AUDIT_DIR, dplment)
         for csvfilepath in glob.glob(os.path.join(tgtpath, "*.csv")):
-            csvfile = pd.read_csv(csvfilepath)
-            csvfile['Timestamp'] = pd.to_datetime(csvfile['Timestamp'])
-            validate_audit(csvfile)
-            if config.DROP_MISSING:
-                csvfile = csvfile[csvfile['Behavior'] != "No observation"]
-            if config.COMBINE_BEHAVIORS:
-                csvfile['Behavior'] = csvfile['Behavior'].map(
-                        config.BEHAVIOR_SIMPLIFIER
-                        )
-            if config.DROP_OTHERS:
-                csvfile = csvfile[csvfile["Behavior"] != "Others"]
-
+            csvfile = load_auditfile(csvfilepath)
             yield dplment, os.path.basename(csvfilepath)[:-len(".csv")], csvfile
 
 

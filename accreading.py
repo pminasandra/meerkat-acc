@@ -61,6 +61,24 @@ def drop_leading_zeros(df):
     df.reset_index(drop=True, inplace=True)
 
 
+def load_acc_file(filepath, subset_cols=True):
+    csvfilepath = filepath
+    if subset_cols:
+        csvfile = pd.read_csv(csvfilepath, usecols=["Timestamp", "X", "Y", "Z"])
+    else:
+        try:
+            csvfile = pd.read_csv(csvfilepath, dtype=dtypes_dict_raw)
+        except Exception as e:
+            print("dtype didn't work, trying again:", e)
+            csvfile = pd.read_csv(csvfilepath)
+    csvfile['Timestamp'] = pd.to_datetime(csvfile['Timestamp'],
+                                format='%d/%m/%Y %H:%M:%S.%f',
+                                dayfirst=True)
+    validate_acc_file(csvfile, subset_cols=subset_cols)
+    drop_leading_zeros(csvfile)
+
+    return csvfile
+
 def load_acc_files(list_of_dplments=config.DEPLOYMENTS, subset_cols=True):
     """
     GENERATOR!!
@@ -76,20 +94,8 @@ def load_acc_files(list_of_dplments=config.DEPLOYMENTS, subset_cols=True):
     for dplment in list_of_dplments:
         tgtpath = os.path.join(config.ACC_GPS_DIR, dplment)
         for csvfilepath in glob.glob(os.path.join(tgtpath, "*.csv")):
-            if subset_cols:
-                csvfile = pd.read_csv(csvfilepath, usecols=["Timestamp", "X", "Y", "Z"])
-            else:
-                try:
-                    csvfile = pd.read_csv(csvfilepath, dtype=dtypes_dict_raw)
-                except Exception as e:
-                    print("dtype didn't work, trying again:", e)
-                    csvfile = pd.read_csv(csvfilepath)
-            csvfile['Timestamp'] = pd.to_datetime(csvfile['Timestamp'],
-                                        format='%d/%m/%Y %H:%M:%S.%f',
-                                        dayfirst=True)
-            validate_acc_file(csvfile, subset_cols=subset_cols)
-            drop_leading_zeros(csvfile)
 
+            csvfile = load_acc_file(csvfilepath)
             yield dplment, os.path.basename(csvfilepath)[:-len(".csv")], csvfile
 
 
