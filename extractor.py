@@ -8,6 +8,7 @@ Extract features from ACC data
 
 import os.path
 
+import numpy as np
 import pandas as pd
 
 import accreading
@@ -111,6 +112,20 @@ def _mean_vedba(frame):
 
     return ((dx**2 + dy**2 + dz**2 )**0.5).mean()
 
+@feature
+def _autocorr(frame):
+
+    arr = (frame.X**2 + frame.Y**2 + frame.Z**2)**0.5
+    arr = np.array(arr)
+    n = len(arr)
+    shift = n // 2  # Compute half-length shift dynamically
+
+    rolled_arr = np.roll(arr, shift=shift)  # Roll by half the array length
+    autocorr = np.correlate(arr, rolled_arr, mode='full')  # Compute full autocorrelation
+    mid_index = len(autocorr) // 2  # Center of the correlation result
+
+    return autocorr[mid_index]  # Return the autocorrelation at lag=n//2
+
 ##### FEATURES END HERE
 
 def make_features_dir():
@@ -132,7 +147,12 @@ def extract_all_features(accfile_generator):
     """
 
     for dplment, filename, df in accfile_generator:
+        tgtfilename = filename + "_extracted_features.csv"
+        tgtfilepath = os.path.join(config.DATA, "Features", dplment, tgtfilename)
 
+        if os.path.exists(tgtfilepath):
+            print(f"Already found {filename}. Skipping.")
+            continue
         feature_df = {} # Not a df right now, but becomes one later. Minor hack to save mem
         feature_df["Timestamp"] = [] # timestamps will be stored here
         for fname in ALL_FEATURES:
@@ -146,9 +166,6 @@ def extract_all_features(accfile_generator):
             for fname, ffunc in ALL_FEATURES.items():
                 fval = ffunc(frame)
                 feature_df[fname].append(fval)
-
-        tgtfilename = filename + "_extracted_features.csv"
-        tgtfilepath = os.path.join(config.DATA, "Features", dplment, tgtfilename)
 
         feature_df = pd.DataFrame(feature_df)
         feature_df.to_csv(tgtfilepath, index=False)

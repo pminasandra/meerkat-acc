@@ -14,14 +14,23 @@ with open(".cw", "r") as fd:
     PROJECTROOT = fd.read().rstrip()
 DATA = os.path.join(PROJECTROOT, "Data")
 
-ACC_GPS_DIR = os.path.join(DATA, "ACC_GPS")
+ACC_GPS_DIR = "/home/pranav/ExtraneousData/Meerkats/ACCGPS"
 AUDIT_DIR = os.path.join(DATA, "Audits")
 PREDICTIONS_DIR = os.path.join(DATA, "Predictions")
 
 FIGURES = os.path.join(PROJECTROOT, "Figures")
 
 # Deployments
-DEPLOYMENTS = ["NQ_2021_1", "RW_2021_1", "ZU_2021_1", "ZU_2021_2"]
+#DEPLOYMENTS = ["NQ_2021_1", "RW_2021_1", "ZU_2021_1", "ZU_2021_2"]
+
+DEPLOYMENTS = ["NQ_2021_1",
+"NQ_2022_1",
+"RW_2021_1",
+"RW_2022_1",
+"SI_2022_1",
+"ZU_2021_1",
+"ZU_2021_2",
+"L_2024_2"]
 
 # Loading names of all individuals
 INDIVIDUALS = {}
