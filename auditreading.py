@@ -20,6 +20,56 @@ if not config.SUPPRESS_INFORMATIVE_PRINT:
     old_print = print
     print = utilities.sprint
 
+def expand_behaviour_intervals(df):
+    """
+    Expands behavior events into second-by-second labeled intervals.
+
+    Parameters:
+    df (pd.DataFrame): DataFrame with columns ['Time', 'Behavior', 'Behavior type', 'Comment']
+
+    Returns:
+    pd.DataFrame: Expanded DataFrame with columns ['datetime', 'behavior', 'comment']
+    """
+    # Extract all UTC reference timestamps
+    timestamp_rows = df[df['Behavior'] == 'Timestamp']
+    if timestamp_rows.empty:
+        raise ValueError("No Timestamp row found in the data.")
+
+    # Compute estimated video start time by averaging all timestamps
+    offsets = timestamp_rows['Time'].values
+    utc_times = [dt.datetime.strptime(ts, "%Y-%m-%d %H:%M:%S") for ts in timestamp_rows['Comment']]
+    estimated_start_time = sum([(utc - dt.timedelta(seconds=offset)) for utc, offset in zip(utc_times, offsets)], dt.timedelta()) / len(utc_times)
+
+    # Track active behaviors
+    active_behaviors = {}
+    expanded_rows = []
+
+    for _, row in df.iterrows():
+        current_time = estimated_start_time + dt.timedelta(seconds=row['Time'])
+        behavior, btype, comment = row['Behavior'], row['Behavior type'], row['Comment']
+
+        if btype == 'START':
+            if behavior in active_behaviors:
+                print(f"Warning: Overlapping behavior '{behavior}' at {current_time}")
+            active_behaviors[behavior] = current_time
+
+        elif btype == 'STOP':
+            if behavior not in active_behaviors:
+                print(f"Warning: STOP found for '{behavior}' at {current_time} without a START")
+                continue
+            start_time = active_behaviors.pop(behavior)
+
+            # Fill each second within the behavior duration
+            for sec in range(int(start_time.timestamp()), int(current_time.timestamp()) + 1):
+                expanded_rows.append({
+                    'datetime': dt.datetime.utcfromtimestamp(sec),
+                    'behavior': behavior,
+                    'comment': comment
+                })
+
+    return pd.DataFrame(expanded_rows)
+
+
 def validate_audit(df):
     """
     Checks column labels and behavioral states in a given dataframe,
